@@ -1,54 +1,40 @@
-import React, { useState } from 'react';
-import './Cart.module.css';
+import React, { useContext } from 'react';
+import CartContext from '../../store/store-context';
+import Modal from '../UI/Modal';
+import './Cart.css';
+import CartItem from './CartItem';
 
-const Cart=()=>{
- const[show, setShow]= useState(false);
+const Cart=(props)=>{
+    const cartCtx=useContext(CartContext);
+    const totalAmount= `$ ${cartCtx.totalAmount.toFixed(2)}`;
 
- const showCart=()=>{
-    setShow(true);
- }
+    const cartItems= (
+        cartCtx.items.map((item)=>(
+            <CartItem
+            id={item.id}
+            name={item.name}
+            imageURL={item.imageURL}
+            price={item.price}/>
+        ))
+    );
     return (
-        <section id="cart" className="container" onClick={showCart}>
-            {show && <h2>CART</h2>}
-            <button className="cancel">X</button>
+        <Modal id="cart" className="container">
+            <h2>CART</h2>
+            <button className="cancel" onClick={props.onClose}>X</button>
             <div className="cart-row cart-header">
                 <span className='cart-item cart-column'>ITEM</span>
                 <span className='cart-price cart-column'>PRICE</span>
                 <span className='cart-quantity cart-column'>QUANTITY</span>
             </div>
-            <div className='cart-items'>
-                 <div className="cart-row">
-                    <span className='cart-item cart-column'>
-                        <img className='cart-img' src="img/Shirt.png" alt=""/>
-                        <span>T-Shirt</span>
-                    </span>
-                    <span className='cart-price cart-column'>$19.99</span>
-                    <span className='cart-quantity cart-column'>
-                        <input type="text"/>
-                        <button>REMOVE</button>
-                    </span>
-                </div>
-                <div className="cart-row">
-                    <span className='cart-item cart-column'>
-                        <img className='cart-img' src="/img/Album 3.png" alt=""/>
-                        <span>Album 3</span>
-                    </span>
-                    <span className='cart-price cart-column'>$9.99</span>
-                    <span className='cart-quantity cart-column'>
-                        <input type="text"/>
-                        <button>REMOVE</button>
-                    </span>
-                </div>
-            </div>
+            {cartItems}
             <div className="cart-total">
                 <span>
                     <span className='total-title'> <strong>Total</strong>
-                        </span>
-                    $<span id='total-value'>0</span>
+                        </span><span id='total-value'>{totalAmount}</span>
                 </span>
             </div>
             <button className='purchase-btn' type='button'>PURCHASE</button>
-        </section>
+        </Modal>
     );
 }
 export default Cart;
